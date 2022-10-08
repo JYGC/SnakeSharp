@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
-
-namespace SnakeSharp
+﻿namespace SnakeSharp
 {
     internal enum SnakeDirection
     {
@@ -16,20 +9,20 @@ namespace SnakeSharp
     }
     internal interface ISnake
     {
-        void Put();
+        void Spawn();
         void Grow();
         void Move();
-        Position GetHead();
-        SnakeDirection Direction { get; set; }
         Position GetNextHead();
         public void GetUserInput(ref bool continueGame);
     }
     internal class Snake : ISnake
     {
         private readonly int __startingLength = 5;
-
         private IBoard __board;
         private List<Position> __positions;
+
+        // Creation code
+
         public Snake(IBoard board)
         {
             __board = board;
@@ -43,19 +36,27 @@ namespace SnakeSharp
                 });
             }
         }
-        public void Put()
+
+        public void Spawn()
         {
             for (int i = 0; i < __positions.Count; i++)
             {
                 __board.PutObjects(__positions[i].Left, __positions[i].Top, CellType.Snake);
             }
         }
+
+        // Grow code
+
         private readonly int __growthRate = 1;
         private int __growth = 0;
+
         public void Grow()
         {
             __growth += __growthRate;
         }
+
+        // Movement code
+
         public void Move()
         {
             Position newHead = GetNextHead();
@@ -70,14 +71,12 @@ namespace SnakeSharp
             __board.PutObjects(oldTail.Left, oldTail.Top, CellType.Empty);
             __positions.Remove(oldTail);
         }
-        public Position GetHead()
-        {
-            return __positions[0];
-        }
-        public SnakeDirection Direction { get; set; } = SnakeDirection.Left;
+
+        private SnakeDirection __direction = SnakeDirection.Left;
+
         public Position GetNextHead()
         {
-            switch (Direction)
+            switch (__direction)
             {
                 case SnakeDirection.Up:
                     return new Position
@@ -105,6 +104,7 @@ namespace SnakeSharp
                     };
             }
         }
+
         public void GetUserInput(ref bool continueGame)
         {
             while (continueGame)
@@ -114,16 +114,16 @@ namespace SnakeSharp
                 switch (keyInput)
                 {
                     case ConsoleKey.UpArrow:
-                        if (Direction != SnakeDirection.Down) Direction = SnakeDirection.Up;
+                        if (__direction != SnakeDirection.Down) __direction = SnakeDirection.Up;
                         continue;
                     case ConsoleKey.RightArrow:
-                        if (Direction != SnakeDirection.Left) Direction = SnakeDirection.Right;
+                        if (__direction != SnakeDirection.Left) __direction = SnakeDirection.Right;
                         continue;
                     case ConsoleKey.DownArrow:
-                        if (Direction != SnakeDirection.Up) Direction = SnakeDirection.Down;
+                        if (__direction != SnakeDirection.Up) __direction = SnakeDirection.Down;
                         continue;
                     case ConsoleKey.LeftArrow:
-                        if (Direction != SnakeDirection.Right) Direction = SnakeDirection.Left;
+                        if (__direction != SnakeDirection.Right) __direction = SnakeDirection.Left;
                         continue;
                     default:
                         continue;

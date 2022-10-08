@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SnakeSharp
+﻿namespace SnakeSharp
 {
     enum CellType
     {
@@ -23,6 +17,7 @@ namespace SnakeSharp
     internal class Cell : Position
     {
         public CellType Type { get; set; } = CellType.Empty;
+
         private ConsoleColor __GetColor()
         {
             switch (Type)
@@ -37,6 +32,7 @@ namespace SnakeSharp
                     return ConsoleColor.Black;
             }
         }
+
         public void PaintConsole()
         {
             Console.SetCursorPosition(Left, Top);
